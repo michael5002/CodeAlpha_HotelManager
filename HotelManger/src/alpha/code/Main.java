@@ -6,5 +6,7 @@ public class Main {
         HotelManager manager = new HotelManager();
 
         manager.processData();
+
+
     }
 }

@@ -8,7 +8,7 @@ public class Reservation {
     public Reservation(String customerName, int roomNumber) {
         this.customerName = customerName;
         this.roomNumber = roomNumber;
-        this.paymentStatus = "Not paid\n";
+        this.paymentStatus = "Not paid";
     }
 
     //output Customer Name
@@ -21,14 +21,14 @@ public class Reservation {
         return roomNumber;
     }
 
-    //output patment status
+    //output payment status
     public String getPaymentStatus() {
         return paymentStatus;
     }
 
 
-    public void makePayment(){
-        paymentStatus = "Paid";
+    public String makePayment(){
+        return paymentStatus = "Paid";
     }
 
     @Override
