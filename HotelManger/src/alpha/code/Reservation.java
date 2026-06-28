@@ -33,6 +33,6 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return (customerName.toUpperCase() + " -> Room " + roomNumber + " -> " + paymentStatus);
+        return (customerName.toUpperCase() + "," + roomNumber + "," + paymentStatus);
     }
 }

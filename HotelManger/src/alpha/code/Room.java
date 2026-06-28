@@ -39,6 +39,11 @@ public class Room {
         return available;
     }
 
+    @Override
+    public String toString() {
+        return roomNumber + "," + category + "," + price +","+ available;
+    }
+
     public void displayRoom(){
         if(available){
             System.out.println("Rm "+roomNumber + " | " + category + " | " + "#" + price + "| "+

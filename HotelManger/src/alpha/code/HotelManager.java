@@ -1,5 +1,6 @@
 package alpha.code;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class HotelManager {
     private ArrayList<Reservation> reservations;
 
     //outputs menu
-    public void menu(){
+    public void menu() {
         System.out.println();
         String menu = """
                 ----Hotel System----
@@ -28,9 +29,7 @@ public class HotelManager {
                 
                 5 - Cancel reservation
                 
-                6 - Save
-                
-                0 - Exit
+                6 - Save & Exit
                 
                 Enter a number for which action you want to do:
                 """;
@@ -50,21 +49,25 @@ public class HotelManager {
 
         rooms.add(new Room(103,
                 "SUITE", 20000));
+
+        loadRooms();
+        loadReservations();
     }
 
     //Search room
-    public void searchRoom(String category){
-        for(Room rm : rooms){
-            if(rm.getCategory().equalsIgnoreCase(category)){
+    public void searchRoom(String category) {
+
+        for (Room rm : rooms) {
+            if (rm.getCategory().equalsIgnoreCase(category)) {
                 rm.displayRoom();
             }
         }
     }
 
     //Book room
-    public void bookRoom(String customerName, int roomNumber){
-        for(Room rm : rooms){
-            if(rm.getRoomNumber() == roomNumber && rm.isAvailable()){
+    public void bookRoom(String customerName, int roomNumber) {
+        for (Room rm : rooms) {
+            if (rm.getRoomNumber() == roomNumber && rm.isAvailable()) {
 
                 rm.setAvailable(false);
 
@@ -81,17 +84,17 @@ public class HotelManager {
     }
 
     //Cancel reservation
-    public void cancelReservation(int roomNumber){
-        for(Reservation re : reservations){
-            for(Room rm : rooms){//loops through every rm in rooms arraylist
+    public void cancelReservation(int roomNumber) {
+        for (Reservation re : reservations) {
+            for (Room rm : rooms) {//loops through every rm in rooms arraylist
 
-                if (rm.getRoomNumber() == roomNumber && !rm.isAvailable()){
+                if (rm.getRoomNumber() == roomNumber && !rm.isAvailable() && re.getRoomNumber() == roomNumber) {
 
-                 rm.setAvailable(true);
 
                     reservations.remove(re);
 
                     System.out.println("Reservation for Room " + roomNumber + " has been cancelled");
+                    rm.setAvailable(true);
                     return;
 
                 }
@@ -103,15 +106,15 @@ public class HotelManager {
     }
 
     //Display reservation
-    public void viewReservation(){
+    public void viewReservation() {
         System.out.println();
         System.out.println("=======PARADISE HOTEL AND SUITE=======");
-        for(Reservation re : reservations){
+        for (Reservation re : reservations) {
 
             System.out.printf(" %12s -> %s%n %15s -> %d%n %18s -> %s%n",
-                    "Customer",re.getCustomerName(),
-                    "Room Number",re.getRoomNumber(),
-                    "Payment status",re.getPaymentStatus());
+                    "Customer", re.getCustomerName(),
+                    "Room Number", re.getRoomNumber(),
+                    "Payment status", re.getPaymentStatus());
 
         }
         System.out.println("--".repeat(18));
@@ -119,43 +122,52 @@ public class HotelManager {
     }
 
     //payment process
-    public void makePayment(int roomNumber){
-        for(Reservation re : reservations) {
-            for (Room rm : rooms) {
-                if (re.getRoomNumber() == roomNumber && !rm.isAvailable()) {
-                    re.makePayment();
+    public void makePayment(int roomNumber) {
+        boolean found = false;
 
-                    System.out.printf("Payment For Room %d %s Package Successful.",
-                            re.getRoomNumber(), rm.getCategory());
-                    System.out.println();
-                    break;
-                } else if (re.getRoomNumber() != roomNumber) {
-                    System.out.println("Reservation Not Found");
-                break;
+        for (Room rm : rooms) {
+
+            if (rm.getRoomNumber() == roomNumber && !rm.isAvailable()) {
+
+                for (Reservation re : reservations) {
+
+                    if (re.getRoomNumber() == roomNumber) {
+
+                        re.makePayment();
+
+                        System.out.printf(
+                                "Payment For Room %d %s Package Successful.%n",
+                                rm.getRoomNumber(),
+                                rm.getCategory());
+
+                        found = true;
+                        break;
+                    }
                 }
+
+                break; // Stop checking rooms once we've found the room number
             }
         }
 
-
+        if (!found) {
+            System.out.println("Reservation Not Found");
+        }
     }
 
     //stores booking
-    public boolean saveToFile(){
+    public void saveBookings() {
         System.out.println("Saving...");
 
         try {
 
             PrintWriter write =
-                    new PrintWriter("booking.txt");
+                    new PrintWriter("bookings.txt");
 
-            System.out.println(
-                    "Reservations found: "
-                            + reservations.size());
 
-            for(Reservation re : reservations){
+            for (Reservation re : reservations) {
 
-                System.out.println(
-                        "Writing -> " + re);
+//                System.out.println(
+//                        "Writing -> " + re);
 
                 write.println(re);
             }
@@ -165,160 +177,80 @@ public class HotelManager {
             System.out.println(
                     "Bookings Saved");
 
-            return true;
 
-        } catch(IOException e){
+        } catch (IOException e) {
 
             System.out.println(
                     "Error saving file");
 
-            return false;
+
         }
 
-        //String filePath = "C:\\Users\\User\\Desktop\\booking.txt";
-
-//        try {
-//            PrintWriter write = new PrintWriter("booking.txt");
-//
-//            for(Reservation re : reservations){
-//                write.println(re);
-//
-//            }
-//            write.close();
-//
-//            System.out.println(
-//                    "Bookings Saved");
-//
-//            return true;
-//
-//        }catch (IOException e){
-//
-//            System.out.println("Error saving file");
-//            return false;
-//        }
-
-
-
     }
 
-    public void loadFile(){
 
-        new MyFrame();
+
+    public void saveRooms() {
+        try {
+            PrintWriter writer = new PrintWriter("rooms.txt");
+
+            for (Room rm : rooms) {
+                writer.println(rm);
+            }
+            writer.close();
+
+        } catch (IOException e) {
+
+            System.out.print("Error saving file");
+        }
     }
 
-    //carry out various operations
-    public void processData(){
-        HotelManager manager = new HotelManager();
+    public void loadRooms() {
+        File file = new File("rooms.txt");
 
-        Scanner sc = new Scanner(System.in);
+        if (!file.exists() || file.length() == 0) {
+            return; // Keep the default rooms
+        }
+        try {
+            Scanner read = new Scanner(file);
+            rooms.clear();
 
-        int choice = 0;
-        //manager.menu();
-        do {
-            manager.menu();
+            while (read.hasNextLine()) {
 
-            while(true){
-                try {
-                    choice = sc.nextInt();
+                String[] data = read.nextLine().split(",");
 
-                    break;
-                } catch (InputMismatchException e) {
+                Room rm = new Room(Integer.parseInt(data[0]),
+                        data[1], Double.parseDouble(data[2]));
 
-                    System.out.println("Enter correct input!");
-                    manager.menu();
-                    sc.nextLine();
+                rm.setAvailable(Boolean.parseBoolean(data[3]));
+                rooms.add(rm);
+            }
+        } catch (Exception e) {
+            System.out.println("No room File Found");
+        }
+    }
 
+    public void loadReservations() {
+        try {
+            Scanner read = new Scanner(new File("bookings.txt"));
+            reservations.clear();
 
+            while (read.hasNextLine()) {
+                String[] data = read.nextLine().split(",");
+
+                Reservation re = new Reservation(data[0], Integer.parseInt(data[1]));
+
+                if (data[2].equalsIgnoreCase("Paid")) {
+                    re.makePayment();
                 }
-
+                reservations.add(re);
             }
-
-            switch (choice){
-                case 1:
-                    String category = " ";
-                    System.out.println("""
-                            Enter category of the room
-                            1 -> Standard
-                            
-                            2 -> Deluxe
-                            
-                            3 -> Suite
-                            """);
-
-                    int val = sc.nextInt();
-                    switch (val){
-                        case 1:
-                            category = "standard";
-                            break;
-
-                        case 2:
-                            category = "deluxe";
-                            break;
-
-                        case 3:
-                            category = "suite";
-                            break;
-
-                        default:
-                            System.out.println("Wrong Input!");
-                    }
-                    manager.searchRoom(category.toUpperCase());
-                    break;
-
-                case 2:
-                    System.out.println("Enter Full name: ");
-                    sc.nextLine();
-                    String fullName = sc.nextLine();
-
-                    System.out.println("Enter room number");
-                    int rmNum = sc.nextInt();
-
-                    manager.bookRoom(fullName.toUpperCase(),rmNum);
-
-                    break;
-
-                case 3:
-                    manager.viewReservation();
-                    break;
-
-                case 4:
-                    System.out.println("Enter room number ");
-                    int payRm = sc.nextInt();
-                    System.out.println("""
-                            Non Refundable Transaction
-                            Are you sure you want to continue? (YES/NO)""");
-                    String answer = sc.next();
-
-                    if(answer.equalsIgnoreCase("YES")){
-                        manager.makePayment(payRm);
-                        break;
-                    }
-
-                    break;
-
-                case 5:
-                    System.out.println("Enter room number ");
-                    int cancelRm = sc.nextInt();
-
-                    manager.cancelReservation(cancelRm);
-                    break;
-
-                case 6:
-                    //manager.saveToFile();
-                    if(manager.saveToFile()) {
-                        manager.loadFile();
-
-                    }
-                    break;
-
-                default:
-                    System.out.println("Wrong input");
-                    break;
-            }
-
-        }while(choice != 6);
+        } catch (Exception e) {
+            System.out.println("No booking file found");
+        }
     }
-
 
 
 }
+
+
