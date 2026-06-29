@@ -48,11 +48,10 @@ public class Room {
         if(available){
             System.out.println("Rm "+roomNumber + " | " + category + " | " + "#" + price + "| "+
                     "Available");
-        }else
-            System.out.println("Rm "+roomNumber + " | " + category + " | " + price + "| "+
+        }else {
+            System.out.println("Rm " + roomNumber + " | " + category + " | " + price + "| " +
                     "Booked!");
-
-
+        }
     }
 
 }

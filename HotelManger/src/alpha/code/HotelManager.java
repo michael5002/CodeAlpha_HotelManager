@@ -52,6 +52,7 @@ public class HotelManager {
 
         loadRooms();
         loadReservations();
+
     }
 
     //Search room
@@ -81,6 +82,9 @@ public class HotelManager {
         }
         System.out.println(
                 "Room Not Available");
+        System.out.println(
+                "Try booking a different room."
+        );
     }
 
     //Cancel reservation
@@ -248,8 +252,15 @@ public class HotelManager {
 
                 if (data[2].equalsIgnoreCase("Paid")) {
                     re.makePayment();
+
                 }
                 reservations.add(re);
+
+                for(Room rm : rooms){
+                    if(rm.getRoomNumber()==re.getRoomNumber()){
+                        rm.setAvailable(false);
+                    }
+                }
             }
         } catch (Exception e) {
             System.out.println("No booking file found");
