@@ -85,16 +85,17 @@ public class HotelManager {
 
     //Cancel reservation
     public void cancelReservation(int roomNumber) {
+        boolean found = false;
         for (Reservation re : reservations) {
+
             for (Room rm : rooms) {//loops through every rm in rooms arraylist
 
                 if (rm.getRoomNumber() == roomNumber && !rm.isAvailable() && re.getRoomNumber() == roomNumber) {
-
-
                     reservations.remove(re);
 
                     System.out.println("Reservation for Room " + roomNumber + " has been cancelled");
                     rm.setAvailable(true);
+
                     return;
 
                 }
@@ -102,7 +103,7 @@ public class HotelManager {
             }
         }
 
-
+        System.out.println("Room " + roomNumber + " not found!");
     }
 
     //Display reservation
@@ -147,10 +148,15 @@ public class HotelManager {
 
                 break; // Stop checking rooms once we've found the room number
             }
+//            else {
+//                System.out.println("Rm" + roomNumber + " not Found!");
+//                break;
+//            }
         }
 
         if (!found) {
-            System.out.println("Reservation Not Found");
+            System.out.println("Reservation Not Found!\nor Room does not exist.");
+            System.out.println("Please Ensure You Enter Correct Input Next Time.");
         }
     }
 
@@ -249,7 +255,6 @@ public class HotelManager {
             System.out.println("No booking file found");
         }
     }
-
 
 }
 

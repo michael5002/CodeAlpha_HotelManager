@@ -28,7 +28,6 @@ public class Main {
                     manager.menu();
                     sc.nextLine();
 
-
                 }
 
             }
@@ -71,11 +70,19 @@ public class Main {
                     String fullName = sc.nextLine();
 
                     System.out.println("Enter room number");
-                    int rmNum = sc.nextInt();
+                    try{
+                        int rmNum = sc.nextInt();
 
-                    manager.bookRoom(fullName.toUpperCase(),rmNum);
+                        manager.bookRoom(fullName.toUpperCase(),rmNum);
 
-                    break;
+                        break;
+                    }catch (InputMismatchException e){
+                        System.out.println("Invalid Input!");
+                        System.out.println("\nYou can try again\nEnsure you enter the correct details asked from you.");
+                        break;
+                    }
+
+
 
                 case 3:
                     manager.viewReservation();
@@ -83,14 +90,21 @@ public class Main {
 
                 case 4:
                     System.out.println("Enter room number ");
-                    int payRm = sc.nextInt();
-                    System.out.println("""
+                    try{
+                        int payRm = sc.nextInt();
+                        System.out.println("""
                             Non Refundable Transaction
                             Are you sure you want to continue? (YES/NO)""");
-                    String answer = sc.next();
+                        String answer = sc.next();
 
-                    if(answer.equalsIgnoreCase("YES")){
-                        manager.makePayment(payRm);
+                        if(answer.equalsIgnoreCase("YES")){
+                            manager.makePayment(payRm);
+                            break;
+                        }
+                    }catch (InputMismatchException e){
+                        System.out.println("Invalid Input!");
+                        System.out.println("\nYou can try again\nEnsure you enter the correct details asked from you.");
+
                         break;
                     }
 
@@ -98,10 +112,19 @@ public class Main {
 
                 case 5:
                     System.out.println("Enter room number ");
-                    int cancelRm = sc.nextInt();
+                    try{
+                        int cancelRm = sc.nextInt();
 
-                    manager.cancelReservation(cancelRm);
-                    break;
+                        manager.cancelReservation(cancelRm);
+                        break;
+                    }catch (InputMismatchException e){
+                        System.out.println("Invalid Input!");
+                        System.out.println("\nYou can try again\nEnsure you enter the correct details asked from you.");
+
+                        break;
+                    }
+
+
 
                 case 6:
                     //manager.saveToFile();
